@@ -3,12 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-runs = 7
+amount_runs = 7
+amount_to_plot = 7
 
-data = [[] for _ in range(runs)]
-V_GS = [[] for _ in range(runs)]
-I_D = [[] for _ in range(runs)]
-I_D_sqrt = [[] for _ in range(runs)]
+data = [[] for _ in range(amount_runs)]
+V_GS = [[] for _ in range(amount_runs)]
+I_D = [[] for _ in range(amount_runs)]
+I_D_sqrt = [[] for _ in range(amount_runs)]
+
+I_D_sqrt_diff = [[] for _ in range(amount_runs)]
+I_D_sqrt_diff2 = [[] for _ in range(amount_runs)]
 
 filename = "VGS calculations.txt"
 folder = os.path.dirname(os.path.abspath(__file__))
@@ -34,8 +38,37 @@ for run in data:
 
 # Plot
 fig, ax = plt.subplots()
-for i in range(0, runs):
+for i in range(0, amount_to_plot):
     ax.plot(V_GS[i], I_D_sqrt[i], label = 'Run ' + str(i+1))
+ax.set_title("Test")
+
+plt.legend()
+plt.show()
+
+# Differentiating
+for i in range(0, amount_to_plot):
+    I_D_sqrt_diff[i] = np.gradient(I_D_sqrt[i], V_GS[i])
+
+# Plot differential
+fig, ax = plt.subplots()
+for i in range(0, amount_to_plot):
+    ax.plot(V_GS[i], I_D_sqrt[i], label = 'Run ' + str(i+1))
+    ax.plot(V_GS[i], I_D_sqrt_diff[i], label = 'Differential run ' + str(i+1))
+ax.set_title("Test")
+
+plt.legend()
+plt.show()
+
+# Differentiating
+for i in range(0, amount_to_plot):
+    I_D_sqrt_diff2[i] = np.gradient(I_D_sqrt_diff[i], V_GS[i])
+
+# Plot differential
+fig, ax = plt.subplots()
+for i in range(0, amount_to_plot):
+    ax.plot(V_GS[i], I_D_sqrt[i], label = 'Run ' + str(i+1))
+    ax.plot(V_GS[i], I_D_sqrt_diff[i], label = 'Differential run ' + str(i+1))
+    ax.plot(V_GS[i], I_D_sqrt_diff[i], label = 'Differential run ' + str(i+1))
 ax.set_title("Test")
 
 plt.legend()
