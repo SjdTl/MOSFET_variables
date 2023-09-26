@@ -1,3 +1,4 @@
+# Libraries
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -40,4 +41,3 @@ ax.set_title("Test")
 
 plt.legend()
 plt.show()
-
