@@ -40,4 +40,3 @@ ax.set_title("Test")
 
 plt.legend()
 plt.show()
-
