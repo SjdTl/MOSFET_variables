@@ -30,7 +30,7 @@ for run in data:
         I_D[run_amount].append(float(elements[1]))
         I_D_sqrt[run_amount].append(float(elements[2]))
     run_amount += 1
-
+#test
 
 # Plot
 fig, ax = plt.subplots()
