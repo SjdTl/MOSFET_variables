@@ -36,7 +36,6 @@ with open(filepath, 'r') as file:
             amount_runs = int(((line.partition("(Run:")[2]).partition("/")[2]).partition(")")[0])
             break
 
-print(amount_runs)
 
 # Declare arrays
 data = [[] for _ in range(amount_runs)]
@@ -77,10 +76,12 @@ if plot == True:
     fig, ax = plt.subplots()
     for i in range(0, amount_runs):
         ax.plot(V_GS[i], I_D_sqrt[i], label = '$V_{DS}=$' + str(V_DS[i]) + '$V$')
-    ax.set_title("Test")
+    ax.set_title("Square root of drain current against gate voltage for different values of $V_{DS}$")
 
+    plt.ylabel("$\sqrt{I_D}$ ($\sqrt{A}$)")
+    plt.xlabel("$V_{GS}$ (V)")
     plt.legend()
-    plt.show()
+    plt.savefig(fname="Gate_voltage_square_current",dpi=1000)
 
 # Differentiating
 for i in range(0, amount_runs):
@@ -92,10 +93,18 @@ if plot_differential == True:
     for i in range(0, amount_runs):
         ax.plot(V_GS[i], I_D_sqrt[i], label = '$V_{DS}=$' + str(V_DS[i]) + '$V$')
         ax.plot(V_GS[i], I_D_sqrt_diff[i], label = 'Differential $V_{DS}=$' + str(V_DS[i]) + '$V$')
-    ax.set_title("Test")
+    ax.set_title("$\sqrt{I_D}$ against $V_{GS}$ for different values of $V_{DS}$ with differentials")
 
-    plt.legend()
-    plt.show()
+    plt.ylabel("$\sqrt{I_D}$ ($\sqrt{A}$)")
+    plt.xlabel("$V_{GS}$ (V)")
+
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.7, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    plt.savefig(fname="Gate_voltage_square_current_differentials", dpi=1000)
 
 # Differentiating
 for i in range(0, amount_runs):
@@ -127,7 +136,6 @@ for i in range (0, amount_runs):
             lowest_value = abs(I_D_sqrt_diff2[i][j])
             intersection_voltage[i]=(V_GS[i][j])
             intersection_voltage_element[i]=j
-print(intersection_voltage)
 
 a = []
 b = []
@@ -136,9 +144,6 @@ for i in range(0, amount_runs):
     a.append(I_D_sqrt_diff[i][intersection_voltage_element[i]])
     # a(V_GS)+b=I_D_sqrt so b=I_D_sqrt-(a*V_GS) 
     b.append(I_D_sqrt[i][intersection_voltage_element[i]]-a[i]*intersection_voltage[i])
-
-print(a)
-print(b)
 
 def tangent(V_GS, i):
     # Only np arrays can multiply element-wise
@@ -152,19 +157,23 @@ if plot_tangent == True:
         ax.plot(V_GS[i],tangent(V_GS[i], i), label = 'Tangent of $V_{DS}=$' + str(V_DS[i]) + '$V$')
     
     ax.set_title("Extrapolation of the straight-line segments")
-    plt.xlabel("$V_{DS}$ (V)")
-    plt.ylabel("$V_T$ (V)")
-    plt.legend()
+    plt.ylabel("$\sqrt{I_D}$ ($\sqrt{A}$)")
+    plt.xlabel("$V_{GS}$ (V)")
     plt.grid(linewidth=0.1)
-    plt.show()
+
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.7, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    plt.savefig(fname="tangents_VDS", dpi=1000)
 
 # To determine when intersecting with x-axis, the following holds: aV_GS+b=0
 # Therefore $V_{T}$ is given by $V_{T}=-b/a
 V_T=[]
 for i in range(0, amount_runs):
     V_T.append(-b[i]/a[i])
-
-print(V_T)
 
 
 # Degree is one, since there is a linear connection (the modulation is given by ($1-\lambda V_{DS}$) )
@@ -175,17 +184,13 @@ y_values = np.polyval(np.flip(y.convert().coef), x)
 # Plot a and V_T vs. V_DS
 if plot_threshold:
     fig, ax = plt.subplots()
-    ax.plot(x, y_values, label="$a$ for $V_{DS}$")
-    ax.plot(V_DS, V_T, label="$V_T$ to $V_{DS}$")
+    ax.plot(x, y_values, label="Linearized values")
+    ax.plot(V_DS, V_T, label="Experimental values")
     ax.scatter(0,y_values[0])
-    ax.annotate("(0,"+str(round(y_values[0],2))+")", (0,y_values[0]))
+    ax.annotate("(0,"+str(round(y_values[0],3))+")", (0,y_values[0]))
 
-    plt.title("Threshold values")
+    plt.title("Threshold voltages")
     plt.xlabel("$V_{DS}$ (V)")
     plt.ylabel("$V_{T}$ (V)")
     plt.legend()
-    plt.show()
-
-
-# When $V_DS=0$, there is no modulation and $V_T$ is most accurate. $V_DS=0$ is given by y_values[0] (see prev code)
-print(y_values[0])
+    plt.savefig(fname="Threshold_voltages", dpi=1000)
