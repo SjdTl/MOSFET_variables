@@ -40,9 +40,6 @@ V_DS = [[] for _ in range(amount_runs)]
 I_D = [[] for _ in range(amount_runs)]
 I_D_sqrt = [[] for _ in range(amount_runs)]
 
-I_D_diff = [[] for _ in range(amount_runs)]
-I_D_diff2 = [[] for _ in range(amount_runs)] #maybe not necessary
-
 temp = ""
 V_GS = []
 run = -1
@@ -73,11 +70,10 @@ color = ["blue", "orange", "green", "red", "purple"]
 fig, ax = plt.subplots()
 for i in range(0, amount_runs):
     ax.plot(V_DS[i], np.multiply(I_D[i],1000), label = '$V_{GS}=$' + str(round(V_GS[i],1)) + '$V$', color = color[i])
-    ax.plot(V_DS[i], unified(VT0,k,Lambda,Vdsat,V_DS[i],V_GS[i]), label = 'Model $V_{GS}=$' + str(round(V_GS[i],1)) + '$V$', linestyle='dashed', color = color[i])
+    ax.plot(V_DS[i], unified(VT0,k,Lambda,Vdsat,V_DS[i],V_GS[i]), label = '_Model $V_{GS}=$' + str(round(V_GS[i],1)) + '$V$', linestyle='dashed', color = color[i])
+    # Underscore after label hides it from being shown in legend
 ax.set_title("Model and simulation for an NMOS transistor")
-box = ax.get_position()
-ax.set_position([box.x0, box.y0, box.width * 0.7, box.height])
-ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.legend()
 
 plt.ylabel("${I_D}$ (${mA}$)")
 plt.xlabel("$V_{DS}$ (V)")
