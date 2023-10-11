@@ -14,7 +14,7 @@ plot_k = False
 plot_Id_to_VDS = False
 plot_derivative_VDS = False
 plot_linear_k = False
-plot_tangent_VDS = False
+plot_tangent_VDS = False 
 plot_lambda = True
 
 # Find filename and location
@@ -307,7 +307,7 @@ if plot_derivative_VDS == True:
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-    plt.savefig(fname="Drain_voltage_square_current_derivatives", dpi=1000)
+    plt.savefig(fname="Drain_voltage_current_derivatives", dpi=1000)
 
 ID_derivatives_at_zero = [] 
 linear_k = []
@@ -347,7 +347,7 @@ def tangent_VDS(V_DS, i):
     # Only np arrays can multiply element-wise
     return (a[i])*np.array(V_DS)+b[i]
 
-x = np.linspace(-10,2,100)
+x = np.linspace(-10,2.5,100)
 
 if plot_tangent_VDS == True:
     # Plot
@@ -366,27 +366,30 @@ if plot_tangent_VDS == True:
     box = ax.get_position()
     ax.set_position([box.x0, box.y0, box.width * 0.7, box.height])
 
+    ax.set_ylim(-0.2,2.3)
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-    plt.savefig(fname="tangents_VDS", dpi=1000)
+    plt.savefig(fname="tangents_VGS", dpi=1000)
 
+average_lambda=0
+total=0
+amount=0
+for i in range(0,amount_runs):
+    if (V_GS[i]>0.6 and V_GS[i] < 1.8):
+        total =+ lambda_value[i]
+        amount =+ 1
+average_lambda = total/amount
+print(average_lambda)
+        
 
-# Degree is one, since there is a linear connection (the modulation is given by ($1-\lambda V_{DS}$) )
-y=np.polynomial.polynomial.Polynomial.fit(V_GS,lambda_value,1)
-x = np.linspace(0,2,100)
-y_values = np.polyval(np.flip(y.convert().coef), x)
-
-# Plot a and V_T vs. V_DS
 if plot_lambda:
     fig, ax = plt.subplots()
-    ax.plot(x, y_values, label="Linearized values")
-    ax.plot(V_GS, lambda_value, label="Experimental values")
-    ax.scatter(0,y_values[0])
-    ax.annotate("(0,"+str(round(y_values[0],3))+")", (0,y_values[0]))
+    ax.plot(V_GS,lambda_value, label="Experimental values")
 
+    ax.set_xlim(0.75,5)
+    ax.set_ylim(0,0.4)
     plt.title("Value for $\lambda$")
     plt.xlabel("$V_{GS}$ (V)")
     plt.ylabel("$\lambda$ ($V^{-1}$)")
-    plt.legend()
     plt.savefig(fname="Lambda_values", dpi=1000)
